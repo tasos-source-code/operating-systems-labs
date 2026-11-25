@@ -1,0 +1,32 @@
+# Grading documents (not part of the repository)
+OS_Project*_Grading*.pdf
+Project_2/OS_Lab2_grades_2025.pdf
+
+# Duplicate submission archives
+*.zip
+
+# Third-party upstream tutorial (Big Brother File System, GPLv3)
+Project_4/fuse-tutorial/
+
+# Kernel module build artifacts
+*.o
+*.ko
+*.mod
+*.mod.c
+*.cmd
+Module.symvers
+modules.order
+.tmp_versions/
+
+# Autotools dependency files
+.deps/
+
+# Userspace build outputs
+*.a
+Project_1/find_roots
+Project_2/Scheduler_VM/sjf_sched
+Project_3/wset_monitor
+Project_4/project/filesystem/myfs
+Project_4/project/filesystem/testbench
+Project_4/project/filesystem/fs/
+*.log
