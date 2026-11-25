@@ -1,0 +1,74 @@
+The OUTPUT of run_tests.sh:
+
+--------------------------------------------------------------------------------
+The test checks if the all the accessed pages have young_bit = 1,
+The test checks if the all the pages have pressnet bit = 1,
+The test if all the written pages have dirty bit = 1 (50% of the accessed pages)
+for different load and number of pages
+--------------------------------------------------------------------------------
+------------------------------------------
+Testing Page Group: Number of pages=10
+------------------------------------------
+load percentage = 10%,  -- accessed pages: 1/10 -- present pages: 10/10 -- dirty pages: 1/10    -       PASS
+load percentage = 20%,  -- accessed pages: 2/10 -- present pages: 10/10 -- dirty pages: 2/10    -       PASS
+load percentage = 30%,  -- accessed pages: 3/10 -- present pages: 10/10 -- dirty pages: 2/10    -       PASS
+load percentage = 40%,  -- accessed pages: 4/10 -- present pages: 10/10 -- dirty pages: 3/10    -       PASS
+load percentage = 50%,  -- accessed pages: 5/10 -- present pages: 10/10 -- dirty pages: 3/10    -       PASS
+load percentage = 100%, -- accessed pages: 10/10        -- present pages: 10/10 -- dirty pages: 5/10    -       PASS
+------------------------------------------
+Testing Page Group: Number of pages=100
+------------------------------------------
+load percentage = 10%,  -- accessed pages: 10/100       -- present pages: 100/100       -- dirty pages: 6/100   -       PASS
+load percentage = 20%,  -- accessed pages: 20/100       -- present pages: 100/100       -- dirty pages: 11/100  -       PASS
+load percentage = 30%,  -- accessed pages: 30/100       -- present pages: 100/100       -- dirty pages: 16/100  -       PASS
+load percentage = 40%,  -- accessed pages: 40/100       -- present pages: 100/100       -- dirty pages: 21/100  -       PASS
+load percentage = 50%,  -- accessed pages: 50/100       -- present pages: 100/100       -- dirty pages: 26/100  -       PASS
+load percentage = 100%, -- accessed pages: 100/100      -- present pages: 100/100       -- dirty pages: 50/100  -       PASS
+------------------------------------------
+Testing Page Group: Number of pages=1000
+------------------------------------------
+load percentage = 10%,  -- accessed pages: 100/1000     -- present pages: 1000/1000     -- dirty pages: 51/1000 -       PASS
+load percentage = 20%,  -- accessed pages: 200/1000     -- present pages: 1000/1000     -- dirty pages: 101/1000        -       PASS
+load percentage = 30%,  -- accessed pages: 300/1000     -- present pages: 1000/1000     -- dirty pages: 151/1000        -       PASS
+load percentage = 40%,  -- accessed pages: 400/1000     -- present pages: 1000/1000     -- dirty pages: 201/1000        -       PASS
+load percentage = 50%,  -- accessed pages: 500/1000     -- present pages: 1000/1000     -- dirty pages: 250/1000        -       PASS
+load percentage = 100%, -- accessed pages: 1000/1000    -- present pages: 1000/1000     -- dirty pages: 500/1000        -       PASS
+------------------------------------------
+Testing Page Group: Number of pages=10000
+------------------------------------------
+load percentage = 10%,  -- accessed pages: 1000/10000   -- present pages: 10000/10000   -- dirty pages: 500/10000       -       PASS
+load percentage = 20%,  -- accessed pages: 2000/10000   -- present pages: 10000/10000   -- dirty pages: 1000/10000      -       PASS
+load percentage = 30%,  -- accessed pages: 3000/10000   -- present pages: 10000/10000   -- dirty pages: 1500/10000      -       PASS
+load percentage = 40%,  -- accessed pages: 4000/10000   -- present pages: 10000/10000   -- dirty pages: 2000/10000      -       PASS
+load percentage = 50%,  -- accessed pages: 5000/10000   -- present pages: 10000/10000   -- dirty pages: 2500/10000      -       PASS
+load percentage = 100%, -- accessed pages: 10000/10000  -- present pages: 10000/10000   -- dirty pages: 5000/10000      -       PASS
+------------------------------------------
+Testing Page Group: Number of pages=100000
+------------------------------------------
+load percentage = 10%,  -- accessed pages: 10000/100000 -- present pages: 100000/100000 -- dirty pages: 5001/100000     -       PASS
+load percentage = 20%,  -- accessed pages: 20000/100000 -- present pages: 100000/100000 -- dirty pages: 10001/100000    -       PASS
+load percentage = 30%,  -- accessed pages: 30000/100000 -- present pages: 100000/100000 -- dirty pages: 15001/100000    -       PASS
+load percentage = 40%,  -- accessed pages: 40000/100000 -- present pages: 100000/100000 -- dirty pages: 20001/100000    -       PASS
+load percentage = 50%,  -- accessed pages: 50000/100000 -- present pages: 100000/100000 -- dirty pages: 25001/100000    -       PASS
+load percentage = 100%, -- accessed pages: 100000/100000        -- present pages: 100000/100000 -- dirty pages: 50000/100000    -       PASS
+All tests completed.
+
+
+REPORT:
+    problems encountered:
+        -- After testing, we found that certain pages weren't being accessed, indicating that ptep_test_and_clear_young() failed to flush the TLB so we used flush_tlb_page() when needed.
+        -- The dirty pages are off by one sometimes. This probably comes from malloc. The first page allocated seems to always be dirty. (mmap could be used to avoid this)
+
+    test:
+        The programm creates a simulation that
+            -allocates space on the memory
+            -accesses a specified percentage of the memory   
+                half of that is written (to test the dirty bit)
+                half is read 
+            -after the simulation it counts the accessed pages, pressent pages and dirty pages and compares the result with the theoretically expected.
+
+    results:
+        From the tests shown above it is clear that the sys_get_page_info systemcall works as expected.
+        Specifically the all accessed pages have the young_bit = 1, 
+        all the pages allocated have present bit = 1,
+        the pages that were written have dirty_bit = 1.
